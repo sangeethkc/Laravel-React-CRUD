@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
 
+use function PHPUnit\Framework\fileExists;
+
 class ProductController extends Controller
 {
     public function get_all_products()
@@ -68,7 +70,36 @@ class ProductController extends Controller
         $product = Product::find($id);
 
         return response()->json([
-            compact('product')
+            'product' => $product
         ],200);
+    }
+    public function update_product(Request $request, $id)
+    {
+        $product = Product::find($id);
+        
+        $product->name = $request->name;
+        $product->description = $request->description;
+
+        if ($product->photo != $request->photo)
+        {
+            $strpos = strpos($request->photo, ';');
+            $sub = substr($request->photo, 0, $strpos);
+            $ex = explode('/', $sub)[1];
+            $name = time() . "." . $ex;
+            $img = Image::make($request->photo)->resize(117, 100);
+            $upload_path = public_path() . "/upload/";
+            $image = $upload_path. $product->photo;
+            $img->save($upload_path.$name);
+            if(fileExists($image)){
+                @unlink($image);
+            }
+        }else {
+            $name = $product->photo;
+        }
+        $product->photo = $name;
+        $product->type = $request->type;
+        $product->quantity = $request->quantity;
+        $product->price = $request->price;
+        $product->save();
     }
 }

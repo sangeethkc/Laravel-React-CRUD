@@ -42,6 +42,7 @@ const Index = () => {
                         <p>Image</p>
                         <p>Product</p>
                         <p>Type</p>
+                        <p>Price</p>
                         <p>Inventory</p>
                         <p>Actions</p>
                     </div>
@@ -52,6 +53,7 @@ const Index = () => {
                                     <img src={`/upload/${item.photo}`} height="40px" />
                                     <a>{item.name}</a>
                                     <p>{item.type}</p>                        
+                                    <a>{item.price}</a>
                                     <p>{item.quantity}</p>
                                     <div>
                                         <button className="btn-icon success" onClick={()=>editProduct(item.id)}>
